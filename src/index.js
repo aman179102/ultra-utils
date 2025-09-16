@@ -3,62 +3,79 @@
  * @version 1.0.0
  */
 
-// String utilities
-export { slugify, toTitleCase, truncate } from './string.js';
+// Import all utility functions
+import * as stringUtils from './string.js';
+import * as dateUtils from './date.js';
+import * as validateUtils from './validate.js';
+import * as numberUtils from './number.js';
+import * as arrayUtils from './array.js';
+import * as objectUtils from './object.js';
+import * as miscUtils from './misc.js';
+import * as fsUtils from './fs.js';
+import * as cryptoUtils from './crypto.js';
+import * as colorUtils from './color.js';
+import * as urlUtils from './url.js';
 
-// Date utilities
-export { formatDate, timeAgo } from './date.js';
+// Export individual modules
+export * from './string.js';
+export * from './date.js';
+export * from './validate.js';
+export * from './number.js';
+export * from './array.js';
+export * from './object.js';
+export * from './misc.js';
+export * from './fs.js';
+export * from './crypto.js';
+export * from './color.js';
+export * from './url.js';
 
-// Validation utilities
-export { isEmail, isUrl, isEmpty } from './validate.js';
-
-// Number utilities
-export { commaNumber, randomInt, bytes } from './number.js';
-
-// Array utilities
-export { unique, chunk, shuffle } from './array.js';
-
-// Object utilities
-export { deepMerge, clone } from './object.js';
-
-// Miscellaneous utilities
-export { uuid, copyToClipboard, colorize } from './misc.js';
-
-// Import all functions for default export
-import { slugify, toTitleCase, truncate } from './string.js';
-import { formatDate, timeAgo } from './date.js';
-import { isEmail, isUrl, isEmpty } from './validate.js';
-import { commaNumber, randomInt, bytes } from './number.js';
-import { unique, chunk, shuffle } from './array.js';
-import { deepMerge, clone } from './object.js';
-import { uuid, copyToClipboard, colorize } from './misc.js';
+// Export grouped modules
+export {
+  stringUtils,
+  dateUtils,
+  validateUtils,
+  numberUtils,
+  arrayUtils,
+  objectUtils,
+  miscUtils,
+  fsUtils,
+  cryptoUtils,
+  colorUtils,
+  urlUtils
+};
 
 // Default export with all functions
 export default {
-  // String
-  slugify,
-  toTitleCase,
-  truncate,
-  // Date
-  formatDate,
-  timeAgo,
-  // Validation
-  isEmail,
-  isUrl,
-  isEmpty,
-  // Number
-  commaNumber,
-  randomInt,
-  bytes,
-  // Array
-  unique,
-  chunk,
-  shuffle,
-  // Object
-  deepMerge,
-  clone,
-  // Misc
-  uuid,
-  copyToClipboard,
-  colorize
+  // String utilities (30+ functions)
+  ...stringUtils,
+  
+  // Date utilities (25+ functions)
+  ...dateUtils,
+  
+  // Validation utilities
+  ...validateUtils,
+  
+  // Number utilities (15+ functions)
+  ...numberUtils,
+  
+  // Array utilities (20+ functions)
+  ...arrayUtils,
+  
+  // Object utilities (15+ functions)
+  ...objectUtils,
+  
+  // File system utilities (10+ functions)
+  ...fsUtils,
+  
+  // Crypto utilities (13+ functions)
+  ...cryptoUtils,
+  
+  // Color utilities (15+ functions)
+  ...colorUtils,
+  
+  // URL utilities (15+ functions)
+  ...urlUtils,
+  
+  // Miscellaneous utilities
+  ...miscUtils
 };

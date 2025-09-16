@@ -5,7 +5,7 @@
  * Run with: node tests/sample.test.js
  */
 
-import * as utils from '../src/index.js';
+import utils from '../src/index.js';
 
 let passed = 0;
 let failed = 0;

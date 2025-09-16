@@ -19,6 +19,14 @@ console.log('🔨 Building CommonJS versions...\n');
 function convertToCommonJS(content, filename) {
   let converted = content;
   
+  // Handle Node.js crypto imports for crypto.js
+  if (filename === 'crypto.js') {
+    converted = converted.replace(/import\s+{\s*([^}]+)\s*}\s+from\s+['"]crypto['"];?/g, 
+      (match, imports) => {
+        return `const { ${imports} } = require('crypto');`;
+      });
+  }
+  
   // Convert export statements
   converted = converted.replace(/export\s+{\s*([^}]+)\s*}\s+from\s+['"]([^'"]+)['"];?/g, 
     (match, exports, module) => {
@@ -41,80 +49,90 @@ function convertToCommonJS(content, filename) {
     ) : [];
     
     if (filename === 'index.js') {
-      // For index.js, we need to require all modules
-      const moduleExports = `
-// String utilities
-const { slugify, toTitleCase, truncate } = require('./string.cjs');
+      // For index.js, we need to require all modules and export everything
+      const indexCjsContent = `/**
+ * Ultra Utils - A lightweight, zero-dependency utility library
+ * @version 1.0.0
+ */
 
-// Date utilities
-const { formatDate, timeAgo } = require('./date.cjs');
+// Import all utility functions
+const stringUtils = require('./string.cjs');
+const dateUtils = require('./date.cjs');
+const validateUtils = require('./validate.cjs');
+const numberUtils = require('./number.cjs');
+const arrayUtils = require('./array.cjs');
+const objectUtils = require('./object.cjs');
+const miscUtils = require('./misc.cjs');
+const fsUtils = require('./fs.cjs');
+const cryptoUtils = require('./crypto.cjs');
+const colorUtils = require('./color.cjs');
+const urlUtils = require('./url.cjs');
 
-// Validation utilities
-const { isEmail, isUrl, isEmpty } = require('./validate.cjs');
+// Export individual functions
+Object.assign(module.exports, stringUtils);
+Object.assign(module.exports, dateUtils);
+Object.assign(module.exports, validateUtils);
+Object.assign(module.exports, numberUtils);
+Object.assign(module.exports, arrayUtils);
+Object.assign(module.exports, objectUtils);
+Object.assign(module.exports, miscUtils);
+Object.assign(module.exports, fsUtils);
+Object.assign(module.exports, cryptoUtils);
+Object.assign(module.exports, colorUtils);
+Object.assign(module.exports, urlUtils);
 
-// Number utilities
-const { commaNumber, randomInt, bytes } = require('./number.cjs');
+// Export grouped modules
+module.exports.stringUtils = stringUtils;
+module.exports.dateUtils = dateUtils;
+module.exports.validateUtils = validateUtils;
+module.exports.numberUtils = numberUtils;
+module.exports.arrayUtils = arrayUtils;
+module.exports.objectUtils = objectUtils;
+module.exports.miscUtils = miscUtils;
+module.exports.fsUtils = fsUtils;
+module.exports.cryptoUtils = cryptoUtils;
+module.exports.colorUtils = colorUtils;
+module.exports.urlUtils = urlUtils;
 
-// Array utilities
-const { unique, chunk, shuffle } = require('./array.cjs');
-
-// Object utilities
-const { deepMerge, clone } = require('./object.cjs');
-
-// Miscellaneous utilities
-const { uuid, copyToClipboard, colorize } = require('./misc.cjs');
-
-module.exports = {
-  // String
-  slugify,
-  toTitleCase,
-  truncate,
-  // Date
-  formatDate,
-  timeAgo,
-  // Validation
-  isEmail,
-  isUrl,
-  isEmpty,
-  // Number
-  commaNumber,
-  randomInt,
-  bytes,
-  // Array
-  unique,
-  chunk,
-  shuffle,
-  // Object
-  deepMerge,
-  clone,
-  // Misc
-  uuid,
-  copyToClipboard,
-  colorize
+// Default export with all functions
+const defaultExport = {
+  // String utilities (30+ functions)
+  ...stringUtils,
+  
+  // Date utilities (25+ functions)
+  ...dateUtils,
+  
+  // Validation utilities
+  ...validateUtils,
+  
+  // Number utilities (15+ functions)
+  ...numberUtils,
+  
+  // Array utilities (20+ functions)
+  ...arrayUtils,
+  
+  // Object utilities (15+ functions)
+  ...objectUtils,
+  
+  // File system utilities (10+ functions)
+  ...fsUtils,
+  
+  // Crypto utilities (13+ functions)
+  ...cryptoUtils,
+  
+  // Color utilities (15+ functions)
+  ...colorUtils,
+  
+  // URL utilities (15+ functions)
+  ...urlUtils,
+  
+  // Miscellaneous utilities
+  ...miscUtils
 };
 
-// Named exports
-module.exports.slugify = slugify;
-module.exports.toTitleCase = toTitleCase;
-module.exports.truncate = truncate;
-module.exports.formatDate = formatDate;
-module.exports.timeAgo = timeAgo;
-module.exports.isEmail = isEmail;
-module.exports.isUrl = isUrl;
-module.exports.isEmpty = isEmpty;
-module.exports.commaNumber = commaNumber;
-module.exports.randomInt = randomInt;
-module.exports.bytes = bytes;
-module.exports.unique = unique;
-module.exports.chunk = chunk;
-module.exports.shuffle = shuffle;
-module.exports.deepMerge = deepMerge;
-module.exports.clone = clone;
-module.exports.uuid = uuid;
-module.exports.copyToClipboard = copyToClipboard;
-module.exports.colorize = colorize;`;
+module.exports = defaultExport;`;
       
-      converted = converted.replace(/export default[\s\S]*$/, moduleExports);
+      converted = indexCjsContent;
     } else {
       // For other files, export the functions
       const moduleExports = functions.map(fn => `module.exports.${fn} = ${fn};`).join('\n');
@@ -154,3 +172,4 @@ files.forEach(file => {
 
 console.log('\n🎉 CommonJS build completed!');
 console.log('📦 Package now supports both ESM and CommonJS imports');
+console.log(`📊 Generated ${files.length} CommonJS modules with 100+ utility functions`);
